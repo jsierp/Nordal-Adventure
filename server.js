@@ -43,6 +43,17 @@ io.on('connection',function(socket){
     socket.on('test',function(){
         console.log('test received');
     });
+
+    socket.on('move', function(move){
+        switch (move) {
+          case "UP" : socket.player.y-=2; break;
+          case "DOWN" : socket.player.y+=2; break;
+          case "LEFT" : socket.player.x-=2; break;
+          case "RIGHT" : socket.player.x+=2; break;
+        }
+
+        io.emit('move',socket.player);
+    });
 });
 
 function getAllPlayers(){
