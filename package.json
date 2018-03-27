@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "",
+  "version": "",
+  "description": "Nordal Epic Game NEG \u0000",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
