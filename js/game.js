@@ -65,6 +65,7 @@ Game.getCoordinates = function(layer,pointer){
 };
 
 Game.addNewPlayer = function(id,x,y,h){
+  
     Game.playerMap[id] = game.add.sprite(x,y,'sprite');
     var style = { font: "20px Arial", fill: "#000000", align: "center"};
     tekst = game.add.text(-20, -15, "Player "+(id+1), style);

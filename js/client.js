@@ -46,6 +46,7 @@ Client.sendStop= function(key){
 }
 
 Client.askNewPlayer = function(){
+
     Client.socket.emit('newplayer');
 };
 
@@ -54,26 +55,29 @@ Client.sendClick = function(x,y){
 };
 
 Client.socket.on('newplayer',function(data){
+
     Game.addNewPlayer(data.id,data.x,data.y,data.health);
+    players[data.id]=data;
 });
 
 Client.socket.on('allplayers',function(data){
+  
     for(var i = 0; i < data.length; i++){
         Game.addNewPlayer(data[i].id,data[i].x,data[i].y,data[i].health);
         players[data[i].id] = data;
     }
+    Client.socket.on('move',function(data){
+        Game.movePlayer(data.id,data.x,data.y);
+        players[data.id]=data;
+    });
+
+    Client.socket.on('remove',function(id){
+        Game.removePlayer(id);
+    });
+
 });
 
 Client.socket.on('hit',function(id_attacker, id_receiver) {
     lives[id_receiver]--;
     Game.playerMap[id].lives[lives[id_receiver]].kill();
-});
-
-Client.socket.on('move',function(data){
-    Game.movePlayer(data.id,data.x,data.y);
-    players[data.id]=data;
-});
-
-Client.socket.on('remove',function(id){
-    Game.removePlayer(id);
 });
