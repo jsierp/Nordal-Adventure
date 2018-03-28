@@ -30,7 +30,8 @@ io.on('connection',function(socket){
             keyLeft: false,
             keyRight: false,
             attack: false,
-            direction: "right";
+            direction: "right",
+            health: 5
         };
         socket.emit('allplayers',getAllPlayers());
         socket.broadcast.emit('newplayer',socket.player);
