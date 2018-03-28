@@ -10,7 +10,7 @@ Client.sendTest = function(){
     Client.socket.emit('test');
 };
 
-Client.sendMove= function(key){
+Client.sendMove = function(key){
     let move;
     switch(key.keyCode)
     {
@@ -61,8 +61,11 @@ Client.socket.on('allplayers',function(data){
     for(var i = 0; i < data.length; i++){
         Game.addNewPlayer(data[i].id,data[i].x,data[i].y);
     }
+});
 
-
+Client.socket.on('hit',function(id_attacker, id_receiver) {
+    lives[id_receiver]--;
+    Game.playerMap[id].lives[lives[id_receiver]].kill();
 });
 
 Client.socket.on('move',function(data){

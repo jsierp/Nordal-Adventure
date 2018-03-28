@@ -31,7 +31,7 @@ io.on('connection',function(socket){
             keyRight: false,
             attack: false,
             direction: "right",
-            hp: 3;
+            health: 5
         };
         socket.emit('allplayers',getAllPlayers());
         socket.broadcast.emit('newplayer',socket.player);
