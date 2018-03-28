@@ -4,7 +4,7 @@ let server = require('http').Server(app);
 let io = require('socket.io').listen(server);
 const MAP_WIDTH = 32*24;
 const MAP_HEIGHT = 32*17;
-const MOVE_SPEED = 10;
+const MOVE_SPEED = 2;
 
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
@@ -92,13 +92,17 @@ function mainLoop() {
 
         if (player !== null && player !== undefined) {
             let moved = false;
-            if (player.keyLeft && player.x-MOVE_SPEED > -15) {
-                player.x -= MOVE_SPEED;
+            if (player.keyLeft) {
+                if (player.x-MOVE_SPEED > -15) {
+                    player.x -= MOVE_SPEED;
+                }
                 player.direction = "left";
                 moved = true;
             }
-            if (player.keyRight && player.x+MOVE_SPEED < MAP_WIDTH-40) {
-                player.x += MOVE_SPEED;
+            if (player.keyRight) {
+                if (player.x+MOVE_SPEED < MAP_WIDTH-40) {
+                    player.x += MOVE_SPEED;
+                }
                 player.direction = "right";
                 moved = true;
             }
@@ -136,9 +140,7 @@ function attack(player) {
     if (!player.lastAttack || Date.now() - player.lastAttack > 200) {
         player.lastAttack = Date.now();
         Object.keys(io.sockets.connected).forEach(function (socketID) {
-
             let target = io.sockets.connected[socketID].player;
-
             if (target) {
                 if (player.direction === "right"
                     && target.x > player.x + 4 && target.x < player.x + 50 && target.y < player.y + 10
@@ -146,15 +148,12 @@ function attack(player) {
                     console.log("trafiony z prawej");
                     target.health--;
                     io.emit('hit', player.id, target.id);
-                    console.log(target);
-
                 } else if (player.direction === "left"
                     && target.x < player.x - 4 && target.x > player.x - 50 && target.y < player.y + 10
                     && target.y > player.y - 10 && player.health > 0) {
                     console.log("trafiony z lewej");
                     target.health--;
                     io.emit('hit', player.id, target.id);
-                    console.log(target);
                 }
                 else {
                     io.emit('try_hit', player.id);

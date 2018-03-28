@@ -104,8 +104,8 @@ Client.socket.on('allplayers', function (data) {
     });
 
     Client.socket.on('try_hit', function (id_attacker) {
-        axe = Game.playerMap[id_attacker].axe;
-        if (Game.playerMap[id_attacker].direction === "right") {
+        axe = players[id_attacker].axe;
+        if (players[id_attacker].direction === "right") {
             tween = game.add.tween(axe).to({angle: 45}, 100, Phaser.Easing.Linear.None, true);
             tween.onComplete.add(axeBackRight, this, id_attacker);
         } else {
@@ -113,7 +113,6 @@ Client.socket.on('allplayers', function (data) {
             tween.onComplete.add(axeBackLeft, this, id_attacker);
         }
     });
-
 });
 
 function axeBackLeft() {

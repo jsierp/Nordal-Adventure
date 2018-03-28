@@ -24,8 +24,6 @@ Game.preload = function () {
 
 Game.create = function () {
     Game.playerMap = {};
-    //  Creates 30 bullets, using the 'bullet' graphic
-
     var attackKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     attackKey.onDown.add(Client.sendAttack, this);
 
@@ -88,12 +86,10 @@ Game.movePlayer = function (id, x, y) {
     player.x = x;
     player.y = y;
 
-    if (players[id].direction !== Game.playerMap[id].direction) {
-        Game.playerMap[id].direction = players[id].direction;
-        Game.playerMap[id].axe.anchor.setTo(1.3, 0);
-
-        Game.playerMap[id].axe.scale.x *= -1;
-        // Game.playerMap[id].addChild(Game.playerMap[id].axe);
+    if (players[id].direction === 'right') {
+        Game.playerMap[id].axe.scale.x = -1;
+    } else {
+        Game.playerMap[id].axe.scale.x = 1;
     }
 };
 
