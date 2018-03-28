@@ -82,9 +82,32 @@ Client.socket.on('hit',function(id_attacker, id_receiver) {
       if(players[id_receiver].health==0) Game.playerMap[id_receiver].axe.kill();
     }
 
+    axe = Game.playerMap[id_attacker].axe;
+    if(Game.playerMap[id_attacker].direction == "right") {
+        tween = game.add.tween(axe).to( { angle: 45 }, 300, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(axeBackRight, this, id_attacker);
+    } else {
+        tween = game.add.tween(axe).to( { angle: -45 }, 300, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(axeBackLeft, this, id_attacker);
+    }
 });
 
-Client.socket.on('try_hit',function(id_attacker) {
+function axeBackLeft() {
+    tween = game.add.tween(axe).to( { angle: 0 }, 300, Phaser.Easing.Linear.None, true);
+}
 
-    console.log("Gracz: "+(id_attacker+1)+" nie umie trafić! XD");
+function axeBackRight() {
+    tween = game.add.tween(axe).to( { angle: 0 }, 300, Phaser.Easing.Linear.None, true);
+}
+
+
+Client.socket.on('try_hit',function(id_attacker) {
+    axe = Game.playerMap[id_attacker].axe;
+    if(Game.playerMap[id_attacker].direction == "right") {
+        tween = game.add.tween(axe).to( { angle: 45 }, 300, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(axeBackRight, this, id_attacker);
+    } else {
+        tween = game.add.tween(axe).to( { angle: -45 }, 300, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(axeBackLeft, this, id_attacker);
+    }
 });

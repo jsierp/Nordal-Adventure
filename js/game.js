@@ -96,6 +96,7 @@ Game.movePlayer = function(id,x,y){
 
     if(players[id].direction!=Game.playerMap[id].direction ){
       Game.playerMap[id].direction  = players[id].direction;
+      Game.playerMap[id].axe.anchor.setTo(1.3,0);
 
       Game.playerMap[id].axe.scale.x *=-1;
       // Game.playerMap[id].addChild(Game.playerMap[id].axe);
