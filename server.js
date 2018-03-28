@@ -80,9 +80,7 @@ io.on('connection', function (socket) {
                 case "up":
                     socket.player.keyUp = false;
                     break;
-
             }
-
         });
     });
 
@@ -108,32 +106,35 @@ io.on('connection', function (socket) {
 
 function mainLoop() {
     Object.keys(io.sockets.connected).forEach(function (socketID) {
-        var player = false;
+        var player = null;
         if (io.sockets.connected[socketID])
-            var player = io.sockets.connected[socketID].player;
-        if (player) {
+            player = io.sockets.connected[socketID].player;
+
+        if (player !== null) {
+            var moved = false;
             if (player.keyLeft) {
                 player.x -= 2;
                 player.direction = "left";
+                moved = true;
             }
             if (player.keyRight) {
                 player.x += 2;
                 player.direction = "right";
+                moved = true;
             }
             if (player.keyDown) {
                 player.y += 2;
+                moved = true;
             }
             if (player.keyUp) {
                 player.y -= 2;
+                moved = true;
             }
 
-
-            io.emit('move', player);
+            if (moved)
+                io.emit('move', player);
         }
-
-
     });
-
 }
 
 setInterval(mainLoop, 20);
@@ -152,8 +153,6 @@ function randomInt(low, high) {
 }
 
 function attack(player) {
-    //player.x=10;
-
     if (!player.lastAttack || Date.now() - player.lastAttack > 200) {
         player.lastAttack = Date.now();
         Object.keys(io.sockets.connected).forEach(function (socketID) {
@@ -161,7 +160,7 @@ function attack(player) {
             var target = io.sockets.connected[socketID].player;
 
             if (target) {
-                if (player.direction == "right"
+                if (player.direction === "right"
                     && target.x > player.x + 4 && target.x < player.x + 50 && target.y < player.y + 10
                     && target.y > player.y - 10 && player.health > 0) {
                     console.log("trafiony z prawej");
@@ -169,7 +168,7 @@ function attack(player) {
                     io.emit('hit', player.id, target.id);
                     console.log(target);
 
-                } else if (player.direction == "left"
+                } else if (player.direction === "left"
                     && target.x < player.x - 4 && target.x > player.x - 50 && target.y < player.y + 10
                     && target.y > player.y - 10 && player.health > 0) {
                     console.log("trafiony z lewej");
