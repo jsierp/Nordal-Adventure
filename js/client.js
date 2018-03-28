@@ -10,6 +10,41 @@ Client.sendTest = function(){
     Client.socket.emit('test');
 };
 
+Client.sendMove= function(key){
+    let move;
+    switch(key.keyCode)
+    {
+      case Phaser.KeyCode.LEFT: move="left"; break;
+      case Phaser.KeyCode.RIGHT: move="right"; break;
+      case Phaser.KeyCode.UP: move="up"; break;
+      case Phaser.KeyCode.DOWN: move="down"; break;
+
+    }
+    Client.socket.emit('move', move);
+
+}
+
+Client.sendAttack = function(){
+    console.log("Do ataku!");
+    weapon.fire();
+    console.log(weapon.bullets.children[0].position)
+    Client.socket.emit('attack');
+};
+
+Client.sendStop= function(key){
+    let move;
+    switch(key.keyCode)
+    {
+      case Phaser.KeyCode.LEFT: move="left"; break;
+      case Phaser.KeyCode.RIGHT: move="right"; break;
+      case Phaser.KeyCode.UP: move="up"; break;
+      case Phaser.KeyCode.DOWN: move="down"; break;
+
+    }
+    Client.socket.emit('stop', move);
+
+}
+
 Client.askNewPlayer = function(){
     Client.socket.emit('newplayer');
 };
@@ -35,5 +70,3 @@ Client.socket.on('allplayers',function(data){
         Game.removePlayer(id);
     });
 });
-
-
