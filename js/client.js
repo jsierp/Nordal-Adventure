@@ -61,7 +61,7 @@ Client.socket.on('newplayer',function(data){
 });
 
 Client.socket.on('allplayers',function(data){
-  
+
     for(var i = 0; i < data.length; i++){
         Game.addNewPlayer(data[i].id,data[i].x,data[i].y,data[i].health);
         players[data[i].id] = data;
@@ -78,6 +78,7 @@ Client.socket.on('allplayers',function(data){
 });
 
 Client.socket.on('hit',function(id_attacker, id_receiver) {
-    lives[id_receiver]--;
-    Game.playerMap[id].lives[lives[id_receiver]].kill();
+    players[id_receiver].health--;
+
+    Game.playerMap[id_receiver].lives[players[id_receiver].health].kill();
 });

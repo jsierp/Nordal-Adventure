@@ -126,14 +126,17 @@ function attack(player)
     if(player.direction=="right"&& target.x>player.x+7 && target.x<player.x+30 && target.y < player.y+5 && target.y > player.y-5)
     {
       console.log("trafiony z prawej");
-      target.hp--;
+      target.health--;
       io.emit('hit',player.id, target.id);
+      console.log(target);
 
     }
     else if(player.direction=="left"&& target.x<player.x-7 && target.x>player.x-30 && target.y < player.y+5 && target.y > player.y-5)
     {
       console.log("trafiony z lewej");
-      target.hp--;
+      target.health--;
+      io.emit('hit',player.id, target.id);
+      console.log(target);
     }
 
   });
