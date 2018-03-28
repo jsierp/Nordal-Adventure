@@ -1,7 +1,10 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io').listen(server);
+let express = require('express');
+let app = express();
+let server = require('http').Server(app);
+let io = require('socket.io').listen(server);
+const MAP_WIDTH = 32*24;
+const MAP_HEIGHT = 32*17;
+const MOVE_SPEED = 10;
 
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
@@ -37,18 +40,15 @@ io.on('connection', function (socket) {
         socket.emit('allplayers', getAllPlayers());
         socket.broadcast.emit('newplayer', socket.player);
 
-
         socket.on('disconnect', function () {
             io.emit('remove', socket.player.id);
         });
-
 
         socket.on('attack', function () {
             attack(socket.player);
         });
 
         socket.on('move', function (move) {
-
             switch (move) {
                 case "right":
                     socket.player.keyRight = true;
@@ -63,7 +63,6 @@ io.on('connection', function (socket) {
                     socket.player.keyUp = true;
                     break;
             }
-
         });
 
         socket.on('stop', function (move) {
@@ -83,51 +82,32 @@ io.on('connection', function (socket) {
             }
         });
     });
-
-    socket.on('move', function (move) {
-        switch (move) {
-            case "UP" :
-                socket.player.y -= 2;
-                break;
-            case "DOWN" :
-                socket.player.y += 2;
-                break;
-            case "LEFT" :
-                socket.player.x -= 2;
-                break;
-            case "RIGHT" :
-                socket.player.x += 2;
-                break;
-        }
-
-        io.emit('move', socket.player);
-    });
 });
 
 function mainLoop() {
     Object.keys(io.sockets.connected).forEach(function (socketID) {
-        var player = null;
+        let player = null;
         if (io.sockets.connected[socketID])
             player = io.sockets.connected[socketID].player;
 
-        if (player !== null) {
-            var moved = false;
-            if (player.keyLeft) {
-                player.x -= 2;
+        if (player !== null && player !== undefined) {
+            let moved = false;
+            if (player.keyLeft && player.x-MOVE_SPEED > -15) {
+                player.x -= MOVE_SPEED;
                 player.direction = "left";
                 moved = true;
             }
-            if (player.keyRight) {
-                player.x += 2;
+            if (player.keyRight && player.x+MOVE_SPEED < MAP_WIDTH-40) {
+                player.x += MOVE_SPEED;
                 player.direction = "right";
                 moved = true;
             }
-            if (player.keyDown) {
-                player.y += 2;
+            if (player.keyDown && player.y+MOVE_SPEED < MAP_HEIGHT-50) {
+                player.y += MOVE_SPEED;
                 moved = true;
             }
-            if (player.keyUp) {
-                player.y -= 2;
+            if (player.keyUp && player.y-MOVE_SPEED > -20) {
+                player.y -= MOVE_SPEED;
                 moved = true;
             }
 
@@ -140,9 +120,9 @@ function mainLoop() {
 setInterval(mainLoop, 20);
 
 function getAllPlayers() {
-    var players = [];
+    let players = [];
     Object.keys(io.sockets.connected).forEach(function (socketID) {
-        var player = io.sockets.connected[socketID].player;
+        let player = io.sockets.connected[socketID].player;
         if (player) players.push(player);
     });
     return players;
@@ -157,7 +137,7 @@ function attack(player) {
         player.lastAttack = Date.now();
         Object.keys(io.sockets.connected).forEach(function (socketID) {
 
-            var target = io.sockets.connected[socketID].player;
+            let target = io.sockets.connected[socketID].player;
 
             if (target) {
                 if (player.direction === "right"
