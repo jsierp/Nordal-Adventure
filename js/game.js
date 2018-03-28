@@ -72,17 +72,7 @@ Game.addNewPlayer = function(id,x,y){
     tekst.x = Game.playerMap[id].width/2-tekst.width/2;
     tekst.y = tekst.height*-0.5;
     Game.playerMap[id].addChild(tekst);
-    weapon.trackSprite(Game.playerMap[id], 0, 0, true);
-
-    //  The bullet will be automatically killed when it leaves the world bounds
-    weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-
-    //  The speed at which the bullet is fired
-    weapon.bulletSpeed = 600;
-
-    //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
-    weapon.fireRate = 100;
-
+  
 };
 
 Game.movePlayer = function(id,x,y){

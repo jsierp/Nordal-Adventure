@@ -30,7 +30,8 @@ io.on('connection',function(socket){
             keyLeft: false,
             keyRight: false,
             attack: false,
-            direction: "right";
+            direction: "right",
+            hp: 3;
         };
         socket.emit('allplayers',getAllPlayers());
         socket.broadcast.emit('newplayer',socket.player);
@@ -41,13 +42,9 @@ io.on('connection',function(socket){
         });
     });
 
-    socket.on('test',function(){
-        console.log('test received');
-    });
 
     socket.on('attack',function(){
-        console.log('attack recived');
-        socket.player.attack = true;
+        attack(socket.player);
     });
     socket.on('move',function(move){
 
@@ -61,7 +58,6 @@ io.on('connection',function(socket){
 
     });
     socket.on('stop',function(move){
-        console.log('move recived '+move);
         switch(move)
         {
           case "right": socket.player.keyRight =false; break;
@@ -79,15 +75,22 @@ function mainLoop(){
       var player = io.sockets.connected[socketID].player;
       if(player)
       {
-        if(player.keyLeft) player.x-=2;
-        if(player.keyRight) player.x+=2;
-        if(player.keyDown) player.y+=2;
-        if(player.keyUp) player.y-=2;
-
-        if(player.attack){
-
-          player.attack=false;
+        if(player.keyLeft) {
+          player.x-=2;
+          player.direction = "left";
         }
+        if(player.keyRight){
+           player.x+=2;
+           player.direction = "right";
+         }
+        if(player.keyDown) {
+          player.y+=2;
+        }
+        if(player.keyUp){
+           player.y-=2;
+         }
+
+
         io.emit('move',player);
       }
 
@@ -113,4 +116,26 @@ function getAllPlayers(){
 
 function randomInt (low, high) {
     return Math.floor(Math.random() * (high - low) + low);
+}
+
+function attack(player)
+{
+  //player.x=10;
+  Object.keys(io.sockets.connected).forEach(function(socketID){
+    var target = io.sockets.connected[socketID].player;
+    if(player.direction=="right"&& target.x>player.x+7 && target.x<player.x+30 && target.y < player.y+5 && target.y > player.y-5)
+    {
+      console.log("trafiony z prawej");
+      target.hp--;
+      io.emit('hit',player.id, target.id);
+
+    }
+    else if(player.direction=="left"&& target.x<player.x-7 && target.x>player.x-30 && target.y < player.y+5 && target.y > player.y-5)
+    {
+      console.log("trafiony z lewej");
+      target.hp--;
+    }
+
+  });
+
 }
