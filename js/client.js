@@ -25,9 +25,7 @@ Client.sendMove = function(key){
 }
 
 Client.sendAttack = function(){
-    console.log("Do ataku!");
-    weapon.fire();
-    console.log(weapon.bullets.children[0].position)
+
     Client.socket.emit('attack');
 };
 
@@ -78,7 +76,15 @@ Client.socket.on('allplayers',function(data){
 });
 
 Client.socket.on('hit',function(id_attacker, id_receiver) {
-    players[id_receiver].health--;
+    if(players[id_receiver].health>0){
+      players[id_receiver].health--;
+      Game.playerMap[id_receiver].lives[players[id_receiver].health].kill();
+      if(players[id_receiver].health==0) Game.playerMap[id_receiver].axe.kill();
+    }
 
-    Game.playerMap[id_receiver].lives[players[id_receiver].health].kill();
+});
+
+Client.socket.on('try_hit',function(id_attacker) {
+
+    console.log("Gracz: "+(id_attacker+1)+" nie umie trafić! XD");
 });

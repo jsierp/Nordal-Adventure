@@ -65,7 +65,7 @@ Game.getCoordinates = function(layer,pointer){
 };
 
 Game.addNewPlayer = function(id,x,y,h){
-  
+
     Game.playerMap[id] = game.add.sprite(x,y,'sprite');
     var style = { font: "20px Arial", fill: "#000000", align: "center"};
     tekst = game.add.text(-20, -15, "Player "+(id+1), style);
@@ -77,6 +77,8 @@ Game.addNewPlayer = function(id,x,y,h){
 
     Game.playerMap[id].axe = game.add.sprite(33,20,'axe1');
     Game.playerMap[id].addChild(Game.playerMap[id].axe);
+
+    Game.playerMap[id].axe.anchor.setTo(1.3,0);
 
     Game.playerMap[id].lives = {};
     for(var i=0; i<h; i++)
@@ -94,11 +96,13 @@ Game.movePlayer = function(id,x,y){
 
     if(players[id].direction!=Game.playerMap[id].direction ){
       Game.playerMap[id].direction  = players[id].direction;
-      Game.playerMap[id].axe.anchor.setTo(1.3,0);
+
       Game.playerMap[id].axe.scale.x *=-1;
       // Game.playerMap[id].addChild(Game.playerMap[id].axe);
       console.log("jfdksf");
+
     }
+
 
 };
 

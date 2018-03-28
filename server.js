@@ -123,22 +123,28 @@ function attack(player)
   //player.x=10;
   Object.keys(io.sockets.connected).forEach(function(socketID){
     var target = io.sockets.connected[socketID].player;
-    if(player.direction=="right"&& target.x>player.x+7 && target.x<player.x+30 && target.y < player.y+5 && target.y > player.y-5)
-    {
-      console.log("trafiony z prawej");
-      target.health--;
-      io.emit('hit',player.id, target.id);
-      console.log(target);
+    if(target){
+      if(player.direction=="right"&& target.x>player.x+4 && target.x<player.x+50 && target.y < player.y+10 && target.y > player.y-10 && player.health>0)
+      {
+        console.log("trafiony z prawej");
+        target.health--;
+        io.emit('hit',player.id, target.id);
+        console.log(target);
 
+      }
+      else if(player.direction=="left"&& target.x<player.x-4 && target.x>player.x-50 && target.y < player.y+10 && target.y > player.y-10 && player.health>0)
+      {
+        console.log("trafiony z lewej");
+        target.health--;
+        io.emit('hit',player.id, target.id);
+        console.log(target);
+      }
+      else {
+        {
+          io.emit('try_hit',player.id);
+        }
+      }
     }
-    else if(player.direction=="left"&& target.x<player.x-7 && target.x>player.x-30 && target.y < player.y+5 && target.y > player.y-5)
-    {
-      console.log("trafiony z lewej");
-      target.health--;
-      io.emit('hit',player.id, target.id);
-      console.log(target);
-    }
-
   });
 
 }
