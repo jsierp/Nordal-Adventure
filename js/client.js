@@ -54,12 +54,13 @@ Client.sendClick = function(x,y){
 };
 
 Client.socket.on('newplayer',function(data){
-    Game.addNewPlayer(data.id,data.x,data.y);
+    Game.addNewPlayer(data.id,data.x,data.y,data.health);
 });
 
 Client.socket.on('allplayers',function(data){
     for(var i = 0; i < data.length; i++){
-        Game.addNewPlayer(data[i].id,data[i].x,data[i].y);
+        Game.addNewPlayer(data[i].id,data[i].x,data[i].y,data[i].health);
+        players[data[i].id] = data;
     }
 });
 
@@ -70,6 +71,7 @@ Client.socket.on('hit',function(id_attacker, id_receiver) {
 
 Client.socket.on('move',function(data){
     Game.movePlayer(data.id,data.x,data.y);
+    players[data.id]=data;
 });
 
 Client.socket.on('remove',function(id){

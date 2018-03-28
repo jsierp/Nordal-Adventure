@@ -7,7 +7,7 @@
  */
 
 var Game = {};
-var lives = {};
+var players = {};
 
 Game.init = function(){
     game.stage.disableVisibilityChange = true;
@@ -19,6 +19,7 @@ Game.preload = function() {
     game.load.image('sprite','assets/sprites/sprite.png');
     game.load.image('bullet', 'assets/bullets/bullet05.png');
     game.load.image('health', 'assets/sprites/health.png');
+    game.load.image('axe1', 'assets/sprites/axe.png');
 };
 
 Game.create = function(){
@@ -63,7 +64,7 @@ Game.getCoordinates = function(layer,pointer){
     Client.sendClick(pointer.worldX-30,pointer.worldY-40);
 };
 
-Game.addNewPlayer = function(id,x,y,h=5){
+Game.addNewPlayer = function(id,x,y,h){
     Game.playerMap[id] = game.add.sprite(x,y,'sprite');
     var style = { font: "20px Arial", fill: "#000000", align: "center"};
     tekst = game.add.text(-20, -15, "Player "+(id+1), style);
@@ -71,22 +72,15 @@ Game.addNewPlayer = function(id,x,y,h=5){
     tekst.x = Game.playerMap[id].width/2-tekst.width/2;
     tekst.y = tekst.height*-0.5;
     Game.playerMap[id].addChild(tekst);
-    weapon.trackSprite(Game.playerMap[id], 0, 0, true);
+    Game.playerMap[id].direction = "left";
 
-    //  The bullet will be automatically killed when it leaves the world bounds
-    weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    Game.playerMap[id].axe = game.add.sprite(33,20,'axe1');
+    Game.playerMap[id].addChild(Game.playerMap[id].axe);
 
-    //  The speed at which the bullet is fired
-    weapon.bulletSpeed = 600;
-
-    //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
-    weapon.fireRate = 100;
-
-    lives[id] = h; // Number of lives
     Game.playerMap[id].lives = {};
     for(var i=0; i<h; i++)
     {
-        Game.playerMap[id].lives[i] = game.add.sprite(2+12*i,9,'health');
+        Game.playerMap[id].lives[i] = game.add.sprite(Game.playerMap[id].width/2-12*h/2+12*i,9,'health');
         Game.playerMap[id].addChild(Game.playerMap[id].lives[i]);
     }
 };
@@ -96,6 +90,14 @@ Game.movePlayer = function(id,x,y){
 
     player.x=x;
     player.y=y;
+
+    if(players[id].direction!=Game.playerMap[id].direction ){
+      Game.playerMap[id].direction  = players[id].direction;
+      Game.playerMap[id].axe.anchor.setTo(1.3,0);
+      Game.playerMap[id].axe.scale.x *=-1;
+      // Game.playerMap[id].addChild(Game.playerMap[id].axe);
+      console.log("jfdksf");
+    }
 
 };
 
