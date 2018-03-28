@@ -86,6 +86,10 @@ Client.socket.on('allplayers', function (data) {
         Game.removePlayer(id);
     });
 
+    Client.socket.on('drop', function (box) {
+        Game.addBox(box);
+    });
+
     Client.socket.on('hit', function (id_attacker, id_receiver) {
         if (players[id_receiver].health > 0) {
             players[id_receiver].health--;

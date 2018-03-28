@@ -20,11 +20,12 @@ Game.preload = function () {
     game.load.image('bullet', 'assets/bullets/bullet05.png');
     game.load.image('health', 'assets/sprites/health.png');
     game.load.image('axe1', 'assets/sprites/axe.png');
+    game.load.image('box', 'assets/sprites/box.png');
 };
 
 Game.create = function () {
     Game.playerMap = {};
-    //  Creates 30 bullets, using the 'bullet' graphic
+    Game.boxes = [];
 
     var attackKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     attackKey.onDown.add(Client.sendAttack, this);
@@ -93,9 +94,14 @@ Game.movePlayer = function (id, x, y) {
         Game.playerMap[id].axe.anchor.setTo(1.3, 0);
 
         Game.playerMap[id].axe.scale.x *= -1;
-        // Game.playerMap[id].addChild(Game.playerMap[id].axe);
     }
 };
+
+Game.addBox = function(box) {
+    console.log("drop");
+    newBox = game.add.sprite(box.x, box.y, 'box');
+    Game.boxes.push(newBox);
+}
 
 Game.removePlayer = function (id) {
     Game.playerMap[id].destroy();

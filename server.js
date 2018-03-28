@@ -13,6 +13,12 @@ app.get('/', function (req, res) {
 
 server.lastPlayderID = 0;
 
+var boxes = [];
+var mapWidth = 768;
+var mapHeight = 544;
+var maxBoxes = 3;
+var boxesPossibility = 0.01;
+
 server.listen(process.env.PORT || 8081, function () {
     console.log('Listening on ' + server.address().port);
 });
@@ -83,34 +89,18 @@ io.on('connection', function (socket) {
             }
         });
     });
-
-    socket.on('move', function (move) {
-        switch (move) {
-            case "UP" :
-                socket.player.y -= 2;
-                break;
-            case "DOWN" :
-                socket.player.y += 2;
-                break;
-            case "LEFT" :
-                socket.player.x -= 2;
-                break;
-            case "RIGHT" :
-                socket.player.x += 2;
-                break;
-        }
-
-        io.emit('move', socket.player);
-    });
 });
 
 function mainLoop() {
+
+    handleBoxes();
+
     Object.keys(io.sockets.connected).forEach(function (socketID) {
         var player = null;
         if (io.sockets.connected[socketID])
             player = io.sockets.connected[socketID].player;
 
-        if (player !== null) {
+        if (player) {
             var moved = false;
             if (player.keyLeft) {
                 player.x -= 2;
@@ -138,6 +128,17 @@ function mainLoop() {
 }
 
 setInterval(mainLoop, 20);
+
+function handleBoxes() {
+    if(boxes.length < maxBoxes && Math.random() < boxesPossibility) {
+        console.log("drop");
+        box = {};
+        box.x = Math.random() * (mapWidth-100);
+        box.y = Math.random() * (mapHeight-100);
+        boxes.push(box);
+        io.emit('drop', box);
+    }
+}
 
 function getAllPlayers() {
     var players = [];
